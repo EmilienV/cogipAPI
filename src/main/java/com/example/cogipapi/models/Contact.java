@@ -3,9 +3,6 @@ package com.example.cogipapi.models;
 import jakarta.persistence.*;
 import lombok.*;
 
-
-
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

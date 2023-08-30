@@ -1,4 +1,4 @@
-package com.example.cogipapi.controllers;
+package com.example.cogipapi.jwt;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
