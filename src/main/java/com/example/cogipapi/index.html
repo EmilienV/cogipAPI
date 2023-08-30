@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JWT Token Testing</title>
+</head>
+<body>
+<h1>JWT Token Testing</h1>
+<button id="generateToken">Generate JWT Token</button>
+<button id="testApi">Test API with Token</button>
+<div id="tokenOutput"></div>
+<div id="apiResponse"></div>
+
+<script>
+    document.getElementById("generateToken").addEventListener("click", function() {
+        fetch('http://localhost:8080/api/generate-token', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('tokenOutput').textContent = 'Generated JWT Token: ' + data;
+            })
+            .catch(error => {
+                console.error('Error generating JWT token:', error);
+            });
+    });
+
+    document.getElementById("testApi").addEventListener("click", function() {
+        const jwtToken = document.getElementById('tokenOutput').textContent.split(': ')[1];
+        if (!jwtToken) {
+            alert('Please generate a JWT token first.');
+            return;
+        }
+
+        fetch('/api/data', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ jwtToken: jwtToken })
+        })
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('apiResponse').textContent = 'API Response: ' + data;
+            })
+            .catch(error => {
+                console.error('Error testing API:', error);
+            });
+    });
+</script>
+</body>
+</html>
