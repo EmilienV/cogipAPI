@@ -5,6 +5,8 @@ import com.example.cogipapi.repositories.InvoiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
@@ -30,12 +32,11 @@ public class InvoiceService {
         return invoiceRepository.findByCompanyId(companyId);
     }
 
-    public List<Invoice> getInvoicesByType(String type) {
-        return invoiceRepository.findByType(type);
-    }
 
-    public List<Invoice> getInvoicesByDateRange(Date startDate, Date endDate) {
-        return invoiceRepository.findByInvoiceDateBetween(startDate, endDate);
+    public List<Invoice> getInvoicesByDateRange(Timestamp startDate, Timestamp endDate) {
+        Timestamp startTimestamp = new Timestamp(startDate.getTime());
+        Timestamp endTimestamp = new Timestamp(endDate.getTime());
+        return invoiceRepository.findByTimestampBetween(startTimestamp, endTimestamp);
     }
 
     public Invoice createInvoice(Invoice invoice) {

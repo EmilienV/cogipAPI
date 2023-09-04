@@ -22,7 +22,7 @@ public class Company {
     private String country;
 
     @Column(nullable = false, unique = true)
-    private String vat;
+    private String vatNumber;
 
     @Column(nullable = false)
     private String type;

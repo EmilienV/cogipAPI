@@ -16,7 +16,7 @@ public interface ContactRepository extends JpaRepository<Contact, Long> {
     List<Contact> findByFirstNameAndLastName(String firstName, String lastName);
 
     // Custom query to find contacts by mobile number
-    List<Contact> findByMobile(String mobile);
+    List<Contact> findByPhone(String phone);
 
     // Custom query to find contacts by email
     List<Contact> findByEmail(String email);
