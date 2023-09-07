@@ -1,19 +1,22 @@
 package com.example.cogipapi.authorisation;
-
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import com.example.cogipapi.repositories.UserRepository;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import static org.springframework.security.config.Customizer.withDefaults;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.OrRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 @Configuration
 public class SecurityConfig {
 
     @Bean
-    public UserDetailsService userDetailsService() {
-        return new YourUserDetailsService(); // Replace with your actual UserDetailsService implementation
+    public UserDetailsService userDetailsService(UserRepository userRepository) {
+        return new CustomUserDetailsService(userRepository);
     }
 
     @Bean
@@ -23,17 +26,19 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        RequestMatcher adminRequests = new OrRequestMatcher(
+                new AntPathRequestMatcher("/api/admin/**"),
+                new AntPathRequestMatcher("/api/accountant/**"),
+                new AntPathRequestMatcher("/api/intern/**")
+        );
+
         http
                 .authorizeRequests(authorizeRequests ->
                         authorizeRequests
-                                .antMatchers("/api/admin/**").hasRole("ADMIN")
-                                .antMatchers("/api/accountant/**").hasAnyRole("ADMIN", "ACCOUNTANT")
-                                .antMatchers("/api/intern/**").hasAnyRole("ADMIN", "INTERN")
+                                .requestMatchers(adminRequests).hasAuthority("admin")
                                 .anyRequest().authenticated()
                 )
-                .httpBasic(withDefaults()); // Use basic authentication, you can further customize it here
-
-        http.csrf().disable(); // Disable CSRF for simplicity; you can enable it if needed
+                .httpBasic(Customizer.withDefaults()); // Use basic authentication, you can further customize it here
 
         return http.build();
     }

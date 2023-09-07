@@ -1,10 +1,12 @@
 package com.example.cogipapi.services;
 
+import com.example.cogipapi.authorisation.UserRole;
 import com.example.cogipapi.models.User;
 import com.example.cogipapi.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -24,8 +26,8 @@ public class UserService {
     public User getUserById(Long id) {
         return userRepository.findById(id).orElse(null);
     }
-    public List<User> getUsersByRole(String role) {
-        return userRepository.findByRole(role);
+    public List<User> getUsersByRole(UserRole role) {
+        return userRepository.findByRolesIn(Collections.singleton(role));
     }
 
     public User getUserByUsername(String username) {
